@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>公車動態查詢</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<meta name="theme-color" content="#1f9d63">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20512%20512%22%3E%20%3Crect%20width=%22512%22%20height=%22512%22%20rx=%22112%22%20fill=%22%231f9d63%22/%3E%20%3Crect%20x=%2298%22%20y=%22196%22%20width=%2218%22%20height=%2248%22%20rx=%228%22%20fill=%22%2316252e%22/%3E%20%3Crect%20x=%22396%22%20y=%22196%22%20width=%2218%22%20height=%2248%22%20rx=%228%22%20fill=%22%2316252e%22/%3E%20%3Crect%20x=%22116%22%20y=%2296%22%20width=%22280%22%20height=%22296%22%20rx=%2244%22%20fill=%22%23ffffff%22/%3E%20%3Crect%20x=%22156%22%20y=%22120%22%20width=%22200%22%20height=%2240%22%20rx=%2212%22%20fill=%22%23ffb000%22/%3E%20%3Crect%20x=%22140%22%20y=%22176%22%20width=%22232%22%20height=%22104%22%20rx=%2220%22%20fill=%22%230a6e8a%22/%3E%20%3Crect%20x=%22250%22%20y=%22176%22%20width=%2212%22%20height=%22104%22%20fill=%22%23ffffff%22/%3E%20%3Ccircle%20cx=%22170%22%20cy=%22324%22%20r=%2220%22%20fill=%22%23ffb000%22/%3E%20%3Ccircle%20cx=%22342%22%20cy=%22324%22%20r=%2220%22%20fill=%22%23ffb000%22/%3E%20%3Crect%20x=%22212%22%20y=%22312%22%20width=%2288%22%20height=%2224%22%20rx=%2212%22%20fill=%22%23c2dac7%22/%3E%20%3Crect%20x=%22146%22%20y=%22380%22%20width=%2256%22%20height=%2244%22%20rx=%2214%22%20fill=%22%2316252e%22/%3E%20%3Crect%20x=%22310%22%20y=%22380%22%20width=%2256%22%20height=%2244%22%20rx=%2214%22%20fill=%22%2316252e%22/%3E%20%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<style>
+:root{--bg:#DFF3E3;--panel:#fff;--ink:#16252e;--sub:#5d7280;--line:#c2dac7;--led:#ffb000;--ledbg:#1b1408;--route:#0a6e8a;--soon:#d4380d}
+@media (prefers-color-scheme:dark){:root{--bg:#0f2218;--panel:#173425;--ink:#e6eef2;--sub:#8ea6b3;--line:#2d4f3d;--route:#4fc3e0;--soon:#ff8a5c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:4px 0 12px}
+form{display:flex;gap:8px;margin-bottom:12px}
+select,input,button{font:inherit;color:var(--ink)}
+select,input{padding:11px 12px;border:2px solid var(--line);border-radius:10px;background:var(--panel)}
+input{flex:1;min-width:0}
+.go{padding:0 18px;border:0;border-radius:10px;background:var(--route);color:#fff;font-weight:700;cursor:pointer}
+:focus-visible{outline:3px solid var(--route);outline-offset:2px}
+details{background:var(--panel);border-radius:10px;padding:10px 14px;margin-bottom:12px}
+summary{cursor:pointer;font-weight:500}
+details input{width:100%;margin-top:8px;flex:none}
+details p{font-size:13px;color:var(--sub);margin:8px 0 0}
+.board{background:var(--ledbg);color:var(--led);border-radius:12px;padding:14px 16px;margin:8px 0 14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.board b{font-size:30px;letter-spacing:.04em;line-height:1.1}
+.board small{display:block;color:#c58a1a;font-size:13px}
+.board .eta{font-size:28px;font-weight:700;text-align:right;min-width:90px}
+.dir{display:flex;gap:6px;margin-bottom:10px}
+.dir button{flex:1;padding:10px 8px;border:2px solid var(--line);background:var(--panel);border-radius:8px;cursor:pointer}
+.dir button[aria-pressed="true"]{border-color:var(--route);font-weight:700}
+ol{list-style:none;margin:0;padding:0;background:var(--panel);border-radius:12px;overflow:hidden}
+li{display:flex;align-items:center;gap:12px;padding:0 14px;min-height:56px}
+li+li{border-top:1px solid var(--line)}
+.rail{width:18px;align-self:stretch;position:relative;flex:none}
+.rail:before{content:"";position:absolute;left:8px;top:0;bottom:0;width:3px;background:var(--line)}
+li:first-child .rail:before{top:50%}li:last-child .rail:before{bottom:50%}
+.rail i{position:absolute;left:3px;top:calc(50% - 6px);width:13px;height:13px;border-radius:50%;background:var(--panel);border:3px solid var(--route)}
+.rail i.bus{background:var(--soon);border-color:var(--soon);box-shadow:0 0 0 5px color-mix(in srgb,var(--soon) 25%,transparent)}
+.name{flex:1;font-weight:500}
+.tag{min-width:64px;text-align:center;padding:4px 8px;border-radius:6px;background:var(--bg);font-weight:700;font-size:14px}
+.tag.soon{background:var(--soon);color:#fff}
+.tag.none{color:var(--sub);font-weight:400}
+.fav{border:0;background:none;font-size:22px;cursor:pointer;color:var(--sub);padding:6px}
+.fav[aria-pressed="true"]{color:#e0a100}
+.msg{padding:24px;text-align:center;color:var(--sub)}
+.msg.err{color:var(--soon)}
+.meta{font-size:13px;color:var(--sub);text-align:right;margin-top:8px}
+#saved:empty,#savedstops:empty{display:none}
+#saved,#savedstops{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sc{display:inline-flex;border:2px solid var(--line);border-radius:999px;background:var(--panel);overflow:hidden}
+.sc.on{border-color:var(--route)}
+.sc button{border:0;background:none;cursor:pointer;padding:6px 12px;font-weight:500}
+.sc .rm{padding:6px 10px 6px 0;color:var(--sub)}
+.savebtn{display:block;width:100%;margin-bottom:8px;padding:10px;border:2px dashed var(--line);border-radius:10px;background:none;cursor:pointer;font-weight:500}
+.savebtn[aria-pressed="true"]{border-style:solid;border-color:var(--route)}
+.nm{border:0;background:none;text-align:left;cursor:pointer;padding:14px 0;font-weight:500;text-decoration:underline dotted var(--sub);text-underline-offset:4px}
+dialog{border:0;border-radius:14px;padding:16px;width:calc(100% - 24px);max-width:480px;max-height:80vh;overflow:auto;background:var(--panel);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.dh h2{font-size:17px;margin:0}
+.dh button{border:2px solid var(--line);background:none;border-radius:8px;padding:4px 10px;cursor:pointer}
+.rt{display:flex;align-items:center;gap:10px;width:100%;border:0;border-top:1px solid var(--line);background:none;padding:12px 0;cursor:pointer;text-align:left}
+.rt b{font-size:18px;min-width:70px}
+.rt span.d{flex:1;color:var(--sub);font-size:13px}
+.ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-2px 0 12px;font-size:14px}
+.ctl input{flex:none;width:auto;padding:0;margin-right:4px;vertical-align:-2px}
+#upd{margin-left:auto;color:var(--sub);font-size:13px}
+.rfb{border:2px solid var(--line);background:var(--panel);border-radius:8px;padding:2px 10px;cursor:pointer;margin-left:6px}
+#mapbox{margin-bottom:12px}
+#map{height:320px;border-radius:10px;margin-top:10px;position:relative;z-index:0}
+.busicon{font-size:22px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.leaflet-container{font:inherit}
+</style>
+</head>
+<body>
+<main>
+  <h1><img src="data:image/png;base64,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" alt="" width="32" height="32" style="vertical-align:-8px;border-radius:8px;margin-right:8px">公車動態查詢</h1>
+  <details id="cred">
+    <summary>TDX 金鑰設定</summary>
+    <input id="cid" placeholder="client_id" autocomplete="off" name="tdx-id" aria-label="client_id">
+    <input id="csec" type="password" placeholder="client_secret" autocomplete="new-password" name="tdx-secret" aria-label="client_secret">
+    <p>金鑰只會存在這個瀏覽器的 localStorage，請勿把此檔案連同金鑰分享或公開部署。</p>
+  </details>
+  <form id="f">
+    <select id="city" aria-label="縣市">
+      <option value="Taipei">台北</option><option value="NewTaipei">新北</option><option value="Taoyuan">桃園</option>
+      <option value="Taichung">台中</option><option value="Tainan">台南</option><option value="Kaohsiung">高雄</option>
+      <option value="Keelung">基隆</option><option value="Hsinchu">新竹市</option><option value="HsinchuCounty">新竹縣</option>
+      <option value="MiaoliCounty">苗栗</option><option value="ChanghuaCounty">彰化</option><option value="NantouCounty">南投</option>
+      <option value="YunlinCounty">雲林</option><option value="Chiayi">嘉義市</option><option value="ChiayiCounty">嘉義縣</option>
+      <option value="PingtungCounty">屏東</option><option value="YilanCounty">宜蘭</option><option value="HualienCounty">花蓮</option>
+      <option value="TaitungCounty">台東</option>
+    </select>
+    <input id="route" placeholder="路線，例如 307" aria-label="路線名稱" autocomplete="off" required>
+    <button class="go" type="submit">查詢</button>
+  </form>
+  <div class="ctl"><label><input type="checkbox" id="au"> 自動更新（每 60 秒）</label><button type="button" id="rf" class="rfb">立即更新</button><span id="upd"></span></div>
+  <div id="saved" aria-label="已儲存的路線"></div>
+  <div id="savedstops" aria-label="已儲存的站名"></div>
+  <details id="mapbox"><summary>🗺 地圖（站牌與公車位置）</summary><div id="map"></div></details>
+  <div id="view"><div class="msg">先填入 TDX 金鑰，再選縣市、輸入路線後按「查詢」。</div></div>
+</main>
+<dialog id="dlg" aria-labelledby="dtitle">
+  <div class="dh"><h2 id="dtitle"></h2><span><button id="dsv" type="button"></button> <button id="drf" type="button">更新</button> <button id="dcl" type="button">關閉</button></span></div>
+  <div id="dbody"></div>
+</dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+function showErr(m) {
+  var el = document.getElementById("errbar"), mn = document.querySelector("main");
+  if (!el) { el = document.createElement("div"); el.id = "errbar"; el.className = "msg err"; mn.insertBefore(el, mn.children[1]); }
+  el.textContent = "發生錯誤：" + m;
+}
+window.addEventListener("error", function (e) { showErr(String((e && e.message) || "未知錯誤")); });
+window.addEventListener("unhandledrejection", function (e) { var r = e && e.reason; showErr(String(r && r.message ? r.message : r)); });
+var BASE = "https://tdx.transportdata.tw/api/basic/v2/Bus";
+var TOKEN_URL = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
+var S = { city: "Taipei", route: "", dir: "0", data: null, favs: {}, saved: [], savedStops: [], auto: false, timer: null, token: null, exp: 0, stops: {}, cid: "", csec: "" };
+var $ = function (id) { return document.getElementById(id); };
+try {
+  var p = JSON.parse(localStorage.getItem("busprefs") || "{}");
+  if (p.city) S.city = p.city; if (p.route) S.route = p.route;
+  S.favs = p.favs || {}; S.saved = p.saved || []; S.auto = !!p.auto; S.savedStops = p.savedStops || []; S.cid = p.cid || ""; S.csec = p.csec || "";
+} catch (e) {}
+function save() { try { localStorage.setItem("busprefs", JSON.stringify({ city: S.city, route: S.route, favs: S.favs, saved: S.saved, savedStops: S.savedStops, auto: S.auto, cid: S.cid, csec: S.csec })); } catch (e) {} }
+function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+async function getToken() {
+  if (S.token && Date.now() < S.exp) return S.token;
+  var r = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ grant_type: "client_credentials", client_id: S.cid, client_secret: S.csec })
+  });
+  if (!r.ok) {
+    var detail = ""; try { var ej = await r.json(); detail = (ej.error || "") + (ej.error_description ? "：" + ej.error_description : ""); } catch (x) {}
+    throw new Error("取得 token 失敗（" + r.status + "）" + (detail ? "，伺服器回應：" + detail : "") + "。請檢查 client_id 與 client_secret");
+  }
+  var j = await r.json();
+  S.token = j.access_token; S.exp = Date.now() + (j.expires_in - 60) * 1000;
+  return S.token;
+}
+async function tdx(kind) {
+  var filter = "RouteName/Zh_tw eq '" + S.route + "'";
+  var url = BASE + "/" + kind + "/City/" + S.city + "/" + encodeURIComponent(S.route) + "?$filter=" + encodeURIComponent(filter) + "&$format=JSON";
+  var r = await fetch(url, { headers: { authorization: "Bearer " + (await getToken()) } });
+  if (r.status === 401) S.token = null;
+  if (!r.ok) { var er = new Error(kind + " 回應 " + r.status); er.status = r.status; er.kind = kind; er.retryAfter = parseInt(r.headers.get("retry-after") || "0", 10) || 0; throw er; }
+  return r.json();
+}
+
+function build(stopsData, etaData, nearData) {
+  var dirs = {};
+  [0, 1].forEach(function (d) {
+    var c = stopsData.filter(function (x) { return x.Direction === d; });
+    if (!c.length) return;
+    var main = c.reduce(function (a, b) { return b.Stops.length > a.Stops.length ? b : a; });
+    var etas = {};
+    etaData.forEach(function (e) {
+      if (e.Direction !== d) return;
+      var cur = etas[e.StopUID];
+      if (!cur || (e.EstimateTime != null && (cur.EstimateTime == null || e.EstimateTime < cur.EstimateTime))) etas[e.StopUID] = e;
+    });
+    dirs[d] = main.Stops.slice().sort(function (a, b) { return a.StopSequence - b.StopSequence; }).map(function (s) {
+      var e = etas[s.StopUID] || {};
+      return { uid: s.StopUID, lat: s.StopPosition ? s.StopPosition.PositionLat : null, lon: s.StopPosition ? s.StopPosition.PositionLon : null, name: s.StopName.Zh_tw, eta: e.EstimateTime == null ? null : e.EstimateTime, status: e.StopStatus == null ? null : e.StopStatus };
+    });
+  });
+  var buses = nearData.map(function (b) { return { dir: b.Direction, uid: b.StopUID }; });
+  return { dirs: dirs, buses: buses, updated: new Date().toISOString() };
+}
+
+function fmt(s) {
+  if (s.eta != null && (s.status === 0 || s.status == null)) {
+    return s.eta <= 60 ? { t: "進站中", c: "soon" } : { t: Math.ceil(s.eta / 60) + " 分", c: s.eta <= 300 ? "soon" : "" };
+  }
+  var m = { 1: "尚未發車", 2: "不停靠", 3: "末班已過", 4: "今日未營運" };
+  return { t: m[s.status] || "無資料", c: "none" };
+}
+
+async function load(spin) {
+  if (spin) $("view").innerHTML = '<div class="msg">載入中…</div>';
+  var key = S.city + "|" + S.route;
+  try {
+    if (!S.stops[key]) S.stops[key] = await tdx("StopOfRoute");
+    if (!S.stops[key].length) throw new Error("找不到這條路線，請確認縣市與路線名稱");
+    // 車輛位置每兩次更新才抓一次，以減少請求量
+    if (S.nearKey !== key) { S.nearKey = key; S.lastNear = null; S.cycle = 0; }
+    S.cycle = (S.cycle || 0) + 1;
+    var eta = await tdx("EstimatedTimeOfArrival");
+    if (!S.lastNear || S.cycle % 2 === 1) S.lastNear = await tdx("RealTimeNearStop").catch(function () { return S.lastNear || []; });
+    S.delay = 60000;
+    S.dataKey = key;
+    S.data = build(S.stops[key], eta, S.lastNear);
+    if (!S.data.dirs[S.dir]) S.dir = Object.keys(S.data.dirs)[0];
+    render();
+  } catch (e) {
+    if (e.status === 429) { S.delay = e.retryAfter ? Math.min(e.retryAfter * 1000, 300000) : Math.min((S.delay || 60000) * 2, 300000); }
+    var msg429 = "TDX 回應請求過於頻繁（429" + (e.kind ? "，" + e.kind : "") + "）。請至少等 " + Math.round(S.delay / 1000) + " 秒再按「立即更新」，並確認沒有同時開多個分頁或其他程式在使用同一組金鑰。";
+    if (e.status === 429 && S.data && S.dataKey === key) {
+      render();
+      $("view").insertAdjacentHTML("afterbegin", '<div class="msg err">' + esc(msg429 + "（目前顯示的是上一次的資料）") + "</div>");
+      return;
+    }
+    S.data = null;
+    var msg = e.status === 429 ? msg429 : e instanceof TypeError ? "連線失敗，可能是網路問題或瀏覽器的 CORS 限制。若持續發生，請改用 server.js 版本。" : e.message;
+    $("view").innerHTML = '<div class="msg err">' + esc(msg) + "</div>";
+  }
+}
+
+var DIRS = { 0: "去程", 1: "返程", 2: "迴圈", 255: "未知" };
+async function routeInfo(city) {
+  S.ri = S.ri || {};
+  if (S.ri[city]) return S.ri[city];
+  var url = BASE + "/Route/City/" + city + "?$select=" + encodeURIComponent("RouteName,DepartureStopNameZh,DestinationStopNameZh") + "&$top=5000&$format=JSON";
+  var r = await fetch(url, { headers: { authorization: "Bearer " + (await getToken()) } });
+  if (!r.ok) throw new Error("Route " + r.status);
+  var m = {};
+  (await r.json()).forEach(function (x) {
+    var n = x.RouteName && x.RouteName.Zh_tw;
+    if (n && !m[n]) m[n] = { from: x.DepartureStopNameZh || "", to: x.DestinationStopNameZh || "" };
+  });
+  S.ri[city] = m;
+  return m;
+}
+function dirLabel(x, info) {
+  var i = info[x.route], d = DIRS[x.dir] || "";
+  if (!i) return d;
+  var t = x.dir === 0 ? i.to : x.dir === 1 ? i.from : "";
+  return d + (t ? "・往 " + t : "");
+}
+async function showStop(name, city) {
+  var dlg = $("dlg"); city = city || S.city; S.stopName = name; S.stopCity = city; updDsv();
+  $("dtitle").textContent = cityName(city) + "・經過「" + name + "」的路線";
+  $("dbody").innerHTML = '<div class="msg">載入中…</div>';
+  if (!dlg.open) dlg.showModal();
+  try {
+    var filter = "StopName/Zh_tw eq '" + name.replace(/'/g, "''") + "'";
+    var url = BASE + "/EstimatedTimeOfArrival/City/" + city + "?$filter=" + encodeURIComponent(filter) + "&$top=500&$format=JSON";
+    var r = await fetch(url, { headers: { authorization: "Bearer " + (await getToken()) } });
+    if (r.status === 401) S.token = null;
+    if (r.status === 429) throw new Error("TDX 回應請求過於頻繁（429），請稍等一會兒再按「更新」。");
+    if (!r.ok) throw new Error("查詢失敗（" + r.status + "）");
+    var arr = await r.json(), g = {};
+    arr.forEach(function (e) {
+      var k = e.RouteName.Zh_tw + "|" + e.Direction, cur = g[k];
+      var eta = e.EstimateTime == null ? null : e.EstimateTime;
+      if (!cur || (eta != null && (cur.eta == null || eta < cur.eta))) g[k] = { route: e.RouteName.Zh_tw, dir: e.Direction, eta: eta, status: e.StopStatus == null ? null : e.StopStatus };
+    });
+    var list = Object.keys(g).map(function (k) { return g[k]; }).sort(function (a, b) {
+      var x = a.eta == null ? 1e9 : a.eta, y = b.eta == null ? 1e9 : b.eta;
+      return x - y || a.route.localeCompare(b.route, "zh-Hant", { numeric: true });
+    });
+    if (!list.length) { $("dbody").innerHTML = '<div class="msg">這個縣市查不到經過此站名的路線。</div>'; return; }
+    var info = {}; try { info = await routeInfo(city); } catch (e) {}
+    $("dbody").innerHTML = list.map(function (x, i) {
+      var f = fmt(x);
+      return '<button class="rt" data-i="' + i + '"><b>' + esc(x.route) + '</b><span class="d">' + dirLabel(x, info) + '</span><span class="tag ' + f.c + '">' + f.t + "</span></button>";
+    }).join("");
+    $("dbody").querySelectorAll(".rt").forEach(function (b) {
+      b.onclick = function () { $("city").value = city; $("route").value = list[b.dataset.i].route; dlg.close(); $("f").requestSubmit(); };
+    });
+  } catch (e) {
+    $("dbody").innerHTML = '<div class="msg err">' + esc(e instanceof TypeError ? "連線失敗，請檢查網路或改用 server.js 版本。" : e.message) + "</div>";
+  }
+}
+$("dcl").onclick = function () { $("dlg").close(); };
+$("drf").onclick = function () { if (S.stopName) showStop(S.stopName, S.stopCity); };
+function stopSavedIdx() { return S.savedStops.findIndex(function (x) { return x.city === S.stopCity && x.name === S.stopName; }); }
+function updDsv() { var b = $("dsv"), on = stopSavedIdx() >= 0; b.textContent = on ? "★ 已儲存" : "☆ 儲存站名"; b.setAttribute("aria-pressed", on); }
+function renderSavedStops() {
+  var el = $("savedstops");
+  el.innerHTML = S.savedStops.map(function (x, i) {
+    return '<span class="sc"><button class="pk" data-i="' + i + '">📍 ' + esc(cityName(x.city)) + " " + esc(x.name) +
+      '</button><button class="rm" data-i="' + i + '" aria-label="移除站名 ' + esc(x.name) + '">×</button></span>';
+  }).join("");
+  el.querySelectorAll(".pk").forEach(function (b) { b.onclick = function () { var x = S.savedStops[b.dataset.i]; showStop(x.name, x.city); }; });
+  el.querySelectorAll(".rm").forEach(function (b) { b.onclick = function () { S.savedStops.splice(b.dataset.i, 1); save(); renderSavedStops(); updDsv(); }; });
+}
+$("dsv").onclick = function () {
+  var i = stopSavedIdx();
+  if (i >= 0) S.savedStops.splice(i, 1); else S.savedStops.push({ city: S.stopCity, name: S.stopName });
+  save(); updDsv(); renderSavedStops();
+};
+function schedule() { clearTimeout(S.timer); if (!S.auto) return; S.timer = setTimeout(tick, S.delay); }
+async function tick() {
+  if (document.hidden) { S.stale = true; return; } // 分頁在背景時暫停更新
+  await load(false);
+  schedule();
+}
+document.addEventListener("visibilitychange", function () {
+  if (!document.hidden && S.stale && S.route && S.cid) { S.stale = false; tick(); }
+});
+var map = null, layer = null;
+function drawMap() { try { drawMapInner(); } catch (e) { showErr("地圖：" + String(e && e.message ? e.message : e)); } }
+function drawMapInner() {
+  var det = $("mapbox");
+  if (!det.open || !S.data) return;
+  if (typeof L === "undefined") { $("map").innerHTML = '<div class="msg err">地圖元件載入失敗，請確認網路可連到 cdnjs.cloudflare.com。</div>'; return; }
+  if (!map) {
+    map = L.map("map");
+    var TILES = [
+      { name: "CARTO 淡色", url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", o: { maxZoom: 19, subdomains: "abcd", attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> 貢獻者 &copy; <a href="https://carto.com/attributions">CARTO</a>' } },
+      { name: "OpenStreetMap", url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png", o: { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> 貢獻者' } },
+      { name: "Esri 街道", url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", o: { maxZoom: 19, attribution: "Tiles &copy; Esri" } }
+    ];
+    TILES.unshift(TILES.splice(2, 1)[0]); // Esri 街道設為預設，失敗時依序改用 CARTO、OpenStreetMap
+    var baseLayers = {}, cur = 0, errs = 0, ok = false;
+    var objs = TILES.map(function (t) { var l = L.tileLayer(t.url, t.o); baseLayers[t.name] = l; return l; });
+    var useTile = function (n) {
+      objs.forEach(function (l) { if (map.hasLayer(l)) map.removeLayer(l); });
+      cur = n; errs = 0; ok = false; objs[n].addTo(map);
+    };
+    objs.forEach(function (l, n) {
+      l.on("tileload", function () { if (n === cur) ok = true; });
+      l.on("tileerror", function () {
+        if (n !== cur || ok) return;
+        errs++;
+        if (errs >= 4) {
+          if (cur < objs.length - 1) useTile(cur + 1);
+          else if (errs === 4) showErr("地圖底圖無法載入，請檢查網路，或暫時停用廣告攔截外掛。");
+        }
+      });
+    });
+    L.control.layers(baseLayers).addTo(map);
+    map.on("baselayerchange", function (e) { cur = objs.indexOf(e.layer); errs = 0; ok = true; });
+    useTile(0);
+    layer = L.layerGroup().addTo(map);
+  }
+  layer.clearLayers();
+  var stops = (S.data.dirs[S.dir] || []).filter(function (x) { return x.lat != null && x.lon != null; });
+  if (!stops.length) { map.setView([23.7, 121], 7); setTimeout(function () { map.invalidateSize(); }, 0); return; }
+  var pts = stops.map(function (x) { return [x.lat, x.lon]; });
+  L.polyline(pts, { color: "#0a6e8a", weight: 4, opacity: 0.8 }).addTo(layer);
+  var busAt = {};
+  S.data.buses.forEach(function (b) { if (String(b.dir) === S.dir) busAt[b.uid] = true; });
+  stops.forEach(function (st) {
+    var f = fmt(st);
+    var m = L.circleMarker([st.lat, st.lon], { radius: 6, color: "#0a6e8a", fillColor: "#fff", fillOpacity: 1, weight: 3 }).addTo(layer);
+    m.bindPopup("<b>" + esc(st.name) + "</b><br>" + f.t + '<br><a href="#" class="lk">查看經過此站的路線</a>');
+    m.on("popupopen", function (ev) {
+      var a = ev.popup.getElement().querySelector(".lk");
+      if (a) a.onclick = function (e2) { e2.preventDefault(); showStop(st.name); };
+    });
+    if (busAt[st.uid]) {
+      L.marker([st.lat, st.lon], { icon: L.divIcon({ className: "", html: '<div class="busicon">🚌</div>', iconSize: [24, 24], iconAnchor: [12, 12] }), zIndexOffset: 500 }).addTo(layer)
+        .bindPopup("<b>" + esc(st.name) + "</b><br>公車在此站附近");
+    }
+  });
+  var key = S.city + "|" + S.route + "|" + S.dir;
+  setTimeout(function () { map.invalidateSize(); if (S.mapKey !== key) { map.fitBounds(pts, { padding: [20, 20] }); S.mapKey = key; } }, 0);
+}
+$("mapbox").addEventListener("toggle", drawMap);
+function cityName(c) { var o = $("city").querySelector('option[value="' + c + '"]'); return o ? o.textContent : c; }
+function savedIdx() { return S.saved.findIndex(function (x) { return x.city === S.city && x.route === S.route; }); }
+function renderSaved() {
+  var el = $("saved");
+  el.innerHTML = S.saved.map(function (x, i) {
+    var on = x.city === S.city && x.route === S.route;
+    return '<span class="sc' + (on ? " on" : "") + '"><button class="pick" data-i="' + i + '">' + esc(cityName(x.city)) + " " + esc(x.route) +
+      '</button><button class="rm" data-i="' + i + '" aria-label="移除 ' + esc(x.route) + '">×</button></span>';
+  }).join("");
+  el.querySelectorAll(".pick").forEach(function (b) { b.onclick = function () { var x = S.saved[b.dataset.i]; $("city").value = x.city; $("route").value = x.route; $("f").requestSubmit(); }; });
+  el.querySelectorAll(".rm").forEach(function (b) { b.onclick = function () { S.saved.splice(b.dataset.i, 1); save(); if (S.data) render(); else renderSaved(); }; });
+}
+function render() {
+  var d = S.data; if (!d) return;
+  var keys = Object.keys(d.dirs), stops = d.dirs[S.dir];
+  var fk = S.city + "|" + S.route, fu = S.favs[fk];
+  var idx = Math.max(0, stops.findIndex(function (s) { return s.uid === fu; }));
+  var e = fmt(stops[idx]);
+  var h = '<button class="savebtn" id="sv" aria-pressed="' + (savedIdx() >= 0) + '">' + (savedIdx() >= 0 ? "★ 已儲存此路線（點一下取消）" : "☆ 儲存此路線") + '</button><div class="board"><div><b>' + esc(S.route) + "</b><small>" + (fu ? "收藏站牌" : "首站") + "：" + esc(stops[idx].name) +
+    '</small></div><div class="eta">' + e.t + "</div></div>";
+  h += '<div class="dir">' + keys.map(function (k) {
+    return '<button data-d="' + k + '" aria-pressed="' + (k === S.dir) + '">往 ' + esc(d.dirs[k][d.dirs[k].length - 1].name) + "</button>";
+  }).join("") + "</div><ol>";
+  var here = {}; d.buses.forEach(function (b) { if (String(b.dir) === S.dir) here[b.uid] = true; });
+  stops.forEach(function (s, i) {
+    var x = fmt(s);
+    h += '<li><span class="rail"><i class="' + (here[s.uid] ? "bus" : "") + '"></i></span><button class="name nm" data-i="' + i + '" title="查看經過此站的所有路線">' + esc(s.name) +
+      '</button><span class="tag ' + x.c + '">' + x.t + '</span><button class="fav" data-u="' + esc(s.uid) + '" aria-label="收藏 ' + esc(s.name) +
+      '" aria-pressed="' + (fu === s.uid) + '">' + (fu === s.uid ? "★" : "☆") + "</button></li>";
+  });
+  h += "</ol>";
+  $("upd").textContent = "更新於 " + new Date(d.updated).toLocaleTimeString("zh-TW");
+  drawMap();
+  $("view").innerHTML = h;
+  $("sv").onclick = function () { var i = savedIdx(); if (i >= 0) S.saved.splice(i, 1); else S.saved.push({ city: S.city, route: S.route }); save(); render(); };
+  $("view").querySelectorAll(".nm").forEach(function (b) { b.onclick = function () { showStop(stops[b.dataset.i].name); }; });
+  renderSaved();
+  $("view").querySelectorAll(".dir button").forEach(function (b) { b.onclick = function () { S.dir = b.dataset.d; render(); }; });
+  $("view").querySelectorAll(".fav").forEach(function (b) {
+    b.onclick = function () { if (S.favs[fk] === b.dataset.u) delete S.favs[fk]; else S.favs[fk] = b.dataset.u; save(); render(); };
+  });
+}
+
+$("f").addEventListener("submit", function (ev) {
+  ev.preventDefault();
+  var cid = $("cid").value.trim(), csec = $("csec").value.trim();
+  if (cid !== S.cid || csec !== S.csec) { S.token = null; }
+  S.cid = cid; S.csec = csec;
+  if (!cid || !csec) { $("cred").open = true; $("view").innerHTML = '<div class="msg err">請先填入 TDX 金鑰。</div>'; return; }
+  S.city = $("city").value; S.route = $("route").value.trim().replace(/'/g, ""); S.dir = "0"; save();
+  clearTimeout(S.timer); S.delay = 60000; S.stale = false; load(true).then(schedule);
+});
+$("city").value = S.city; $("route").value = S.route; $("cid").value = S.cid; $("csec").value = S.csec;
+$("au").checked = S.auto;
+$("au").onchange = function () { S.auto = this.checked; save(); clearTimeout(S.timer); if (S.auto) schedule(); };
+$("rf").onclick = function () {
+  var b = this, now = Date.now();
+  if (!S.route || !S.cid) { return; }
+  if (S.lastManual && now - S.lastManual < 15000) { b.textContent = "請稍後再按"; setTimeout(function () { b.textContent = "立即更新"; }, 2000); return; }
+  S.lastManual = now; clearTimeout(S.timer); load(false).then(schedule);
+};
+renderSaved(); renderSavedStops();
+if (!S.cid) $("cred").open = true;
+else if (S.route) $("f").requestSubmit();
+</script>
+</body>
+</html>
